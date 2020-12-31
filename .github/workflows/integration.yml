@@ -1,0 +1,21 @@
+name: Continuous integration
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+  pull_request:
+    branches: 
+      - main
+      - dev
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Ubuntu test"
+        run: make test
