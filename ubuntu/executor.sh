@@ -16,7 +16,7 @@ git_install=(
 )
 
 git_test=(
-    "git --help"
+    "git --version"
 )
 
 execute() {
@@ -73,10 +73,10 @@ main() {
 
     RESULT="=========================\n"
     for keyword in "${KEYWORDS[@]}"; do
-        CMDS="${keyword}_install[@]"
-        execute "install ${keyword}" "${!CMDS}"
-
         RESULT+="${keyword} :"
+        CMDS="${keyword}_install[@]"
+
+        execute "install ${keyword}" "${!CMDS}"
         if [ $? -eq 0 ]; then
             RESULT+=" INSTALL[o]"
         else
@@ -86,8 +86,8 @@ main() {
 
         if [ $OPTION == "test" ]; then
             CMDS="${keyword}_test[@]"
-            execute "testing ${keyword}" "${!CMDS}"
 
+            execute "testing ${keyword}" "${!CMDS}"
             if [ $? -eq 0 ]; then
                 RESULT+=" TEST[o]"
             else
