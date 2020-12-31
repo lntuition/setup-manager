@@ -11,6 +11,14 @@ rust_test=(
     "cargo --version"
 )
 
+git_install=(
+    "sudo apt-get -y install git"
+)
+
+git_test=(
+    "git --help"
+)
+
 execute() {
     # See below links to know about array arguments
     # https://askubuntu.com/questions/674333/
@@ -38,7 +46,8 @@ main() {
     # See below links to write argument parser
     # https://stackoverflow.com/questions/7529856
     # https://stackoverflow.com/questions/46351722/
-    
+    ret=0
+
     if [ $# -lt 1 ]; then
         echo "[ERROR] No option given, use 'install' or 'test' option"
         return 127
@@ -59,24 +68,39 @@ main() {
 
     if [ ${#KEYWORDS[@]} -eq 0 ]; then
         echo "[WARNING] No keyword was given, use all keyword"
-        KEYWORDS=("rust")
+        KEYWORDS=("rust" "git")
     fi
 
-    for keyword in "${KEYWORDS[@]}"; do        
+    RESULT="=========================\n"
+    for keyword in "${KEYWORDS[@]}"; do
         CMDS="${keyword}_install[@]"
         execute "install ${keyword}" "${!CMDS}"
-        if [ $? -ne 0 ]; then
-            return 1
+
+        RESULT+="${keyword} :"
+        if [ $? -eq 0 ]; then
+            RESULT+=" INSTALL[o]"
+        else
+            RESULT+=" INSTALL[x]"
+            ret=1
         fi
-        
+
         if [ $OPTION == "test" ]; then
             CMDS="${keyword}_test[@]"
             execute "testing ${keyword}" "${!CMDS}"
-            if [ $? -ne 0 ]; then
-                return 1
+
+            if [ $? -eq 0 ]; then
+                RESULT+=" TEST[o]"
+            else
+                RESULT+=" TEST[x]"
+                ret=1
             fi
         fi
+        RESULT+="\n"
     done
+    RESULT+="=========================\n"
+    echo -e $RESULT
+
+    return $ret
 }
 
 main "$@"
