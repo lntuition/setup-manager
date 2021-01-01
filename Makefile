@@ -25,21 +25,12 @@ build-clean: pre-condition
 	docker rmi -f ${IMAGE}
 
 # debug
-debug-install: pre-condition build
+debug: pre-condition build
 	$(call __docker_run, \
 		--interactive \
 		--tty \
 		, \
 		bash \
-	)
-
-debug-test: pre-condition build
-	$(call __docker_run, \
-		--interactive \
-		--tty \
-		, \
-		/bin/bash -c \
-		"./executor.sh install; bash" \
 	)
 
 # install
@@ -51,10 +42,17 @@ install: pre-condition build
 
 # test
 test: pre-condition build
+ifdef keyword
 	$(call __docker_run, \
 		, \
-		./executor.sh test \
+		./executor.sh test -k ${keyword} \
 	)
+else
+	$(call __docker_run, \
+		, \
+		./executor.sh test\
+	)
+endif
 
 # all
 all: test
