@@ -1,22 +1,50 @@
 #!/bin/bash
 
 rust_install=(
-    "sudo apt-get -y install curl"
+    "sudo apt-get -y install build-essential curl libssl-dev pkg-config"
     "curl -sSf https://sh.rustup.rs | sh -s -- -y"
+    "source $HOME/.cargo/env"
+    "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh"
+    "cargo install cargo-generate"
 )
 
 rust_test=(
-    "source $HOME/.cargo/env"
     "rustc --version"
     "cargo --version"
+    "wasm-pack --version"
+    "cargo generate --version"
 )
 
 git_install=(
     "sudo apt-get -y install git"
+    "git config --global user.email 'ekffu200098@gmail.com'"
+    "git config --global user.name 'Sang-Heon Jeon'"
+    "git config --global core.editor 'code --wait'"
 )
 
 git_test=(
     "git --version"
+)
+
+node_install=(
+    "curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -"
+    "sudo apt-get -y install gcc g++ make nodejs"
+)
+
+node_test=(
+    "node --version"
+    "npm --version"
+)
+
+code_install=(
+    "sudo apt-get -y install software-properties-common apt-transport-https wget libasound2 xdg-utils"
+    "wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -"
+    "sudo add-apt-repository 'deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main'"
+    "sudo apt-get -y install code"
+)
+
+code_test=(
+    "code --version"
 )
 
 execute() {
@@ -68,7 +96,7 @@ main() {
 
     if [ ${#KEYWORDS[@]} -eq 0 ]; then
         echo "[WARNING] No keyword was given, use all keyword"
-        KEYWORDS=("rust" "git")
+        KEYWORDS=("rust" "git" "node" "code")
     fi
 
     RESULT="=========================\n"
